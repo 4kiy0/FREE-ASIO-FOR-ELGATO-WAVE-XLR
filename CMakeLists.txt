@@ -1,0 +1,17 @@
+cmake_minimum_required(VERSION 3.20)
+project(WaveXlrAsio LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+# CRT statique : aucune dépendance au redistribuable Visual C++
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+
+add_library(WaveXlrAsio SHARED src/wavexlr_asio.cpp src/wavexlr_asio.def)
+target_compile_definitions(WaveXlrAsio PRIVATE UNICODE _UNICODE WIN32_LEAN_AND_MEAN NOMINMAX)
+target_link_libraries(WaveXlrAsio PRIVATE ole32 oleaut32 avrt shell32 advapi32 user32 uuid)
+if(MSVC)
+  target_compile_options(WaveXlrAsio PRIVATE /W4 /O2 /utf-8)
+else()
+  target_compile_options(WaveXlrAsio PRIVATE -O2 -Wall)
+  target_link_options(WaveXlrAsio PRIVATE -static -static-libgcc -static-libstdc++)
+  set_target_properties(WaveXlrAsio PROPERTIES PREFIX "")
+endif()
