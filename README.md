@@ -22,7 +22,7 @@ It's **not** a kernel driver and it does **not** replace Elgato's driver. It's a
 
 ## Install
 
-1. Download `WaveXlrAsio.dll`, `install.bat` and `uninstall.bat` from the [Releases](../../releases) page (or build it yourself, see below).
+1. Download `WaveXlrAsio-x64.zip` from the [Releases](../../releases) page and unzip it (or build it yourself, see below).
 2. **Close Wave Link.** Exclusive mode can't open while another app uses the device.
 3. Open `mmsys.cpl` → Wave XLR, on both the **Playback** and **Recording** tabs → Properties → Advanced:
    - tick "Allow applications to take exclusive control of this device"
