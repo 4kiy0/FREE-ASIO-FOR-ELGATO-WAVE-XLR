@@ -1,0 +1,116 @@
+FREE ASIO FOR ELGATO WAVE XLR - HOW TO INSTALL AND CONFIGURE
+=============================================================
+
+Requirements
+------------
+- Windows 10 or 11, 64-bit
+- Elgato Wave XLR MK2, with the Elgato driver installed (it comes with Wave Link)
+- A DAW that supports ASIO (REAPER, Cubase, Ableton Live, FL Studio...)
+
+
+1. PREPARE WINDOWS
+------------------
+a) Close Wave Link completely (right-click its tray icon > Quit).
+   The driver needs exclusive access to the Wave XLR. It won't work while
+   Wave Link or another app is using it.
+
+b) Press Win+R, type  mmsys.cpl  and press Enter.
+
+c) Playback tab > select the Wave XLR > Properties > Advanced:
+   - Default format: 48000 Hz
+   - Tick "Allow applications to take exclusive control of this device"
+   - Click OK
+
+d) Recording tab > select the Wave XLR microphone > Properties > Advanced:
+   - same settings as above
+   - Click OK
+
+
+2. INSTALL THE DRIVER
+---------------------
+a) Unzip WaveXlrAsio-x64.zip into any folder.
+b) Right-click install.bat > "Run as administrator".
+c) A message should say "DllRegisterServer ... succeeded".
+
+The DLL is copied to C:\Program Files\WaveXLR-ASIO\
+
+
+3. SET UP REAPER
+----------------
+a) Options > Preferences > Audio > Device
+b) Audio system: ASIO
+c) ASIO driver: Wave XLR MK2 ASIO
+d) Enable inputs / outputs, then click OK.
+e) The latency REAPER reports is shown in its title bar / device settings.
+
+Other DAWs: pick "Wave XLR MK2 ASIO" in the audio device / ASIO settings.
+
+
+4. CONFIGURATION
+----------------
+Click "ASIO Configuration" in REAPER. You can open the settings file
+from there, or edit it directly:
+
+    %APPDATA%\WaveXLR-ASIO\config.ini
+
+Settings:
+
+  BufferFrames=0
+      ASIO buffer size in samples.
+      0 = the smallest size the Elgato driver accepts (lowest latency).
+      Try 64, 128 or 256 if you get crackles.
+
+  SafetyPeriods=1
+      Extra input margin.
+      0 = lowest latency, but you might hear clicks.
+      1 = a bit more latency, more stable. Recommended to start with.
+
+  SampleRate=48000
+      Default sample rate.
+
+  InputMatch=Wave XLR
+  OutputMatch=Wave XLR
+      Part of the Windows device name the driver looks for.
+      Only change these if the device is not found (see the log).
+
+After changing anything: in REAPER, re-apply the audio device
+(Preferences > Audio > Device > OK) or restart REAPER.
+
+
+5. GETTING THE LOWEST LATENCY
+-----------------------------
+1. Start with BufferFrames=0 and SafetyPeriods=1.
+2. Record and monitor for a few minutes. If it sounds clean,
+   set SafetyPeriods=0 and test again.
+3. If you hear clicks or dropouts, go back one step, or raise
+   BufferFrames (64 > 128 > 256).
+4. Plug the Wave XLR straight into the PC (no USB hub) and use the
+   "High performance" power plan.
+
+
+6. TROUBLESHOOTING
+------------------
+Log file:  %APPDATA%\WaveXLR-ASIO\log.txt
+It lists every audio device found, the one that was picked,
+the audio format, the real minimum buffer size and any error.
+
+"Wave XLR not found"
+    Check the device names in log.txt and change InputMatch /
+    OutputMatch in config.ini.
+
+"Exclusive open failed" / no sound
+    - Close Wave Link and any other app using the Wave XLR
+      (Discord, OBS, browser...).
+    - Check the "exclusive control" boxes (step 1).
+    - Windows Settings > Privacy > Microphone: allow desktop apps.
+
+Driver not listed in the DAW
+    Run install.bat again as administrator.
+
+When asking for help, please attach log.txt to your GitHub issue.
+
+
+7. UNINSTALL
+------------
+Right-click uninstall.bat > "Run as administrator".
+Your settings stay in %APPDATA%\WaveXLR-ASIO\ (you can delete this folder).
